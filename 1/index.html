@@ -219,7 +219,7 @@
       <h2 style="color:#22c55e; margin:0 0 16px;">Perfect! 🎉</h2>
       <p style="font-size:1.3rem; margin:16px 0;">Score: 4 / 4</p>
       
-      <!-- Your GIF link -->
+      <!-- Your GIF -->
       <img src="./gif/Power.gif" alt="Celebration" id="gif" style="max-width:100%; height:auto; border-radius:12px; margin:16px 0;">
       
       <button onclick="document.getElementById('modal').style.display='none'" 
@@ -232,7 +232,7 @@
 </div>
 
 <script>
-// Fullscreen toggle
+// Fullscreen toggle with image switch
 document.addEventListener("DOMContentLoaded", () => {
   const toggleBtn = document.getElementById('fs-toggle');
   const enterIcon = document.getElementById('fs-enter');
@@ -241,16 +241,27 @@ document.addEventListener("DOMContentLoaded", () => {
 
   toggleBtn.addEventListener('click', () => {
     if (!document.fullscreenElement) {
-      wrapper.requestFullscreen?.() ||
-      wrapper.webkitRequestFullscreen?.() ||
-      wrapper.msRequestFullscreen?.();
+      // Enter fullscreen
+      if (wrapper.requestFullscreen) {
+        wrapper.requestFullscreen();
+      } else if (wrapper.webkitRequestFullscreen) {
+        wrapper.webkitRequestFullscreen();
+      } else if (wrapper.msRequestFullscreen) {
+        wrapper.msRequestFullscreen();
+      }
     } else {
-      document.exitFullscreen?.() ||
-      document.webkitExitFullscreen?.() ||
-      document.msExitFullscreen?.();
+      // Exit fullscreen
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      } else if (document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+      } else if (document.msExitFullscreen) {
+        document.msExitFullscreen();
+      }
     }
   });
 
+  // Listen for fullscreen change to switch icons
   document.addEventListener('fullscreenchange', () => {
     const isFullscreen = !!document.fullscreenElement;
     enterIcon.classList.toggle('hidden', isFullscreen);
@@ -258,7 +269,8 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-// Your existing drag & drop + confetti + modal logic
+// ──────────────────────────────────────────────────────────────
+// Your original drag & drop + confetti + modal logic
 const zones = document.querySelectorAll('.drop-zone');
 const optionsBox = document.getElementById('options');
 const submit = document.getElementById('submit');
@@ -357,4 +369,3 @@ reset.addEventListener('click', () => {
 
 </body>
 </html>
-
