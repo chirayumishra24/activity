@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Chemical Effects – Drag & Drop Exercise</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet"/>
-
-  <!-- Confetti (optional – remove if LMS blocks external scripts) -->
+  
+  <!-- Confetti library -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 
   <style>
@@ -17,6 +17,44 @@
       padding: 20px;
       color: #333;
     }
+
+    /* Fullscreen wrapper */
+    #fullscreen-wrapper {
+      min-height: 100vh;
+      position: relative;
+    }
+
+    /* Fixed fullscreen button */
+    #fs-toggle {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      z-index: 9999;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: rgba(37, 99, 235, 0.7);
+      backdrop-filter: blur(6px);
+      border: 2px solid rgba(147, 197, 253, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      transition: all 0.25s;
+    }
+
+    #fs-toggle:hover {
+      background: rgba(37, 99, 235, 0.9);
+      transform: scale(1.1);
+    }
+
+    #fs-toggle img {
+      width: 28px;
+      height: 28px;
+      object-fit: contain;
+    }
+
     .container {
       max-width: 880px;
       margin: 0 auto;
@@ -25,20 +63,24 @@
       box-shadow: 0 4px 16px rgba(0,0,0,0.08);
       overflow: hidden;
     }
+
     .header {
       background: #1e40af;
       color: white;
       padding: 20px;
       text-align: center;
     }
+
     .content {
       padding: 24px;
     }
+
     .question {
       font-size: 1.1rem;
       line-height: 1.8;
       margin-bottom: 32px;
     }
+
     .drop-zone {
       display: inline-block !important;
       width: 220px !important;
@@ -53,21 +95,25 @@
       font-weight: 500 !important;
       color: #555 !important;
     }
+
     .drop-zone.over {
       border-color: #2563eb !important;
       background: #eff6ff !important;
     }
+
     .drop-zone.correct {
       border: 2px solid #22c55e !important;
       background: #f0fdf4 !important;
       color: #166534 !important;
       font-weight: 600 !important;
     }
+
     .drop-zone.wrong {
       border: 2px solid #ef4444 !important;
       background: #fef2f2 !important;
       color: #991b1b !important;
     }
+
     .options {
       display: flex;
       flex-wrap: wrap;
@@ -75,6 +121,7 @@
       justify-content: center;
       margin: 40px 0 48px;
     }
+
     .option {
       padding: 10px 24px;
       background: white;
@@ -84,13 +131,16 @@
       cursor: grab;
       user-select: none;
     }
+
     .option:hover {
       box-shadow: 0 3px 10px rgba(0,0,0,0.1);
     }
+
     .controls {
       text-align: center;
       margin: 24px 0;
     }
+
     button {
       padding: 12px 32px;
       font-size: 1.05rem;
@@ -100,10 +150,13 @@
       cursor: pointer;
       margin: 0 12px;
     }
+
     #submit { background: #2563eb; color: white; }
     #submit:hover { background: #1d4ed8; }
+
     #reset { background: #6b7280; color: white; }
     #reset:hover { background: #4b5563; }
+
     #feedback {
       font-size: 1.15rem;
       font-weight: 600;
@@ -114,68 +167,98 @@
 </head>
 <body>
 
-<div class="container">
-  <div class="header">
-    <h1>Chemical Effects of Electric Current</h1>
-    <p style="margin:8px 0 0;">Drag the correct answer into each blank</p>
-  </div>
+<div id="fullscreen-wrapper" class="min-h-screen">
 
-  <div class="content">
+  <!-- Fullscreen Toggle Button -->
+  <button id="fs-toggle" aria-label="Toggle Fullscreen">
+    <img id="fs-enter" src="/s/articles/6971c474348e12598d489e16/images/fullscreen.png" alt="Enter fullscreen">
+    <img id="fs-exit" src="/s/articles/6971c474348e12598d489e16/images/exit.png" alt="Exit fullscreen" class="hidden">
+  </button>
 
-    <div class="question">
-      <p>(a) Most liquids that conduct electricity are solutions of 
-        <span class="drop-zone" data-correct="acids, bases and salts"></span>.
-      </p>
-
-      <p>(b) The passage of an electric current through a solution causes 
-        <span class="drop-zone" data-correct="chemical"></span> effects.
-      </p>
-
-      <p>(c) If you pass current through copper sulphate solution, copper gets deposited on the plate connected to the 
-        <span class="drop-zone" data-correct="negative"></span> terminal of the battery.
-      </p>
-
-      <p>(d) The process of depositing a layer of any desired metal on another material by means of electricity is called 
-        <span class="drop-zone" data-correct="electroplating"></span>.
-      </p>
+  <div class="container">
+    <div class="header">
+      <h1>Chemical Effects of Electric Current</h1>
+      <p style="margin:8px 0 0;">Drag the correct answer into each blank</p>
     </div>
 
-    <div class="options" id="options">
-      <div class="option" draggable="true">electroplating</div>
-      <div class="option" draggable="true">negative</div>
-      <div class="option" draggable="true">chemical</div>
-      <div class="option" draggable="true">acids, bases and salts</div>
+    <div class="content">
+      <div class="question">
+        <p>(a) Most liquids that conduct electricity are solutions of
+          <span class="drop-zone" data-correct="acids, bases and salts"></span>.
+        </p>
+        <p>(b) The passage of an electric current through a solution causes
+          <span class="drop-zone" data-correct="chemical"></span> effects.
+        </p>
+        <p>(c) If you pass current through copper sulphate solution, copper gets deposited on the plate connected to the
+          <span class="drop-zone" data-correct="negative"></span> terminal of the battery.
+        </p>
+        <p>(d) The process of depositing a layer of any desired metal on another material by means of electricity is called
+          <span class="drop-zone" data-correct="electroplating"></span>.
+        </p>
+      </div>
+
+      <div class="options" id="options">
+        <div class="option" draggable="true">electroplating</div>
+        <div class="option" draggable="true">negative</div>
+        <div class="option" draggable="true">chemical</div>
+        <div class="option" draggable="true">acids, bases and salts</div>
+      </div>
+
+      <div class="controls">
+        <button id="submit">Submit Answers</button>
+        <button id="reset">Reset</button>
+      </div>
+
+      <div id="feedback"></div>
     </div>
+  </div>
 
-    <div class="controls">
-      <button id="submit">Submit Answers</button>
-      <button id="reset">Reset</button>
+  <!-- Celebration modal -->
+  <div id="modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:9999; align-items:center; justify-content:center;">
+    <div style="background:white; border-radius:16px; padding:32px; max-width:460px; width:90%; text-align:center; box-shadow:0 10px 30px rgba(0,0,0,0.3);">
+      <h2 style="color:#22c55e; margin:0 0 16px;">Perfect! 🎉</h2>
+      <p style="font-size:1.3rem; margin:16px 0;">Score: 4 / 4</p>
+      
+      <!-- Your GIF link -->
+      <img src="./gif/Power.gif" alt="Celebration" id="gif" style="max-width:100%; height:auto; border-radius:12px; margin:16px 0;">
+      
+      <button onclick="document.getElementById('modal').style.display='none'" 
+              style="padding:12px 32px; background:#2563eb; color:white; border:none; border-radius:8px; font-size:1.05rem; cursor:pointer;">
+        Close
+      </button>
     </div>
-
-    <div id="feedback"></div>
-
   </div>
-</div>
 
-<!-- Celebration modal -->
-<div id="modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:9999; align-items:center; justify-content:center;">
-  <div style="background:white; border-radius:16px; padding:32px; max-width:460px; width:90%; text-align:center; box-shadow:0 10px 30px rgba(0,0,0,0.3);">
-    <h2 style="color:#22c55e; margin:0 0 16px;">Perfect! 🎉</h2>
-    <p style="font-size:1.3rem; margin:16px 0;">Score: 4 / 4</p>
-    
-    <!-- Paste your GIF link here -->
-    <img src="" alt="Celebration" id="gif" style="max-width:100%; height:auto; border-radius:12px; margin:16px 0;">
-
-    <button onclick="document.getElementById('modal').style.display='none'" style="padding:12px 32px; background:#2563eb; color:white; border:none; border-radius:8px; font-size:1.05rem; cursor:pointer;">
-      Close
-    </button>
-  </div>
 </div>
 
 <script>
-// Paste your own GIF link here
-document.getElementById('gif').src = "./gif/Power.gif";
+// Fullscreen toggle
+document.addEventListener("DOMContentLoaded", () => {
+  const toggleBtn = document.getElementById('fs-toggle');
+  const enterIcon = document.getElementById('fs-enter');
+  const exitIcon = document.getElementById('fs-exit');
+  const wrapper = document.getElementById('fullscreen-wrapper');
 
+  toggleBtn.addEventListener('click', () => {
+    if (!document.fullscreenElement) {
+      wrapper.requestFullscreen?.() ||
+      wrapper.webkitRequestFullscreen?.() ||
+      wrapper.msRequestFullscreen?.();
+    } else {
+      document.exitFullscreen?.() ||
+      document.webkitExitFullscreen?.() ||
+      document.msExitFullscreen?.();
+    }
+  });
+
+  document.addEventListener('fullscreenchange', () => {
+    const isFullscreen = !!document.fullscreenElement;
+    enterIcon.classList.toggle('hidden', isFullscreen);
+    exitIcon.classList.toggle('hidden', !isFullscreen);
+  });
+});
+
+// Your existing drag & drop + confetti + modal logic
 const zones = document.querySelectorAll('.drop-zone');
 const optionsBox = document.getElementById('options');
 const submit = document.getElementById('submit');
@@ -206,17 +289,14 @@ zones.forEach(zone => {
     zone.style.borderColor = '#2563eb';
     zone.style.background = '#eff6ff';
   });
-
   zone.addEventListener('dragleave', () => {
     zone.style.borderColor = '#777';
     zone.style.background = '#f9f9f9';
   });
-
   zone.addEventListener('drop', e => {
     e.preventDefault();
     zone.style.borderColor = '#777';
     zone.style.background = '#f9f9f9';
-
     if (dragged && zone.innerText.trim() === '') {
       zone.innerText = dragged.innerText.trim();
       dragged.remove();
@@ -227,15 +307,12 @@ zones.forEach(zone => {
 submit.addEventListener('click', () => {
   let correct = 0;
   let allFilled = true;
-
   zones.forEach(z => {
     const ans = z.innerText.trim();
     const right = z.dataset.correct;
-
     z.style.border = '2px solid #dc2626';
     z.style.background = '#fee2e2';
     z.style.color = '#991b1b';
-
     if (ans === '') {
       allFilled = false;
     } else if (ans === right) {
@@ -245,12 +322,10 @@ submit.addEventListener('click', () => {
       correct++;
     }
   });
-
   if (!allFilled) {
     feedback.innerHTML = '<span style="color:#d97706">Please fill all blanks first</span>';
     return;
   }
-
   if (correct === 4) {
     feedback.innerHTML = '<span style="color:#22c55e">Perfect! All answers correct 🎉</span>';
     modal.style.display = 'flex';
@@ -269,14 +344,12 @@ reset.addEventListener('click', () => {
     z.style.background = '#f9f9f9';
     z.style.color = '#555';
   });
-
   optionsBox.innerHTML = `
     <div class="option" draggable="true">electroplating</div>
     <div class="option" draggable="true">negative</div>
     <div class="option" draggable="true">chemical</div>
     <div class="option" draggable="true">acids, bases and salts</div>
   `;
-
   feedback.innerHTML = '';
   modal.style.display = 'none';
 });
